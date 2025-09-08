@@ -1,6 +1,6 @@
 // app/api/billing/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../lib/prisma"; // desde app/api/billing → ../../lib/prisma
+import { prisma } from "@/lib/prisma"; // desde app/api/billing → @/lib/prisma
 
 function parseDateRange(url: string) {
   const u = new URL(url);
@@ -60,3 +60,4 @@ export async function GET(req: Request) {
 
   return NextResponse.json({ rows, totals });
 }
+
