@@ -1,0 +1,64 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+// GET detalle (con items y orden)
+export async function GET(_: Request, { params }: { params: { id: string } }) {
+  const inv = await prisma.supplierInvoice.findUnique({
+    where: { id: params.id },
+    include: { items: true, order: { select: { id: true, code: true } }, supplier: true },
+  });
+  if (!inv) return NextResponse.json({ error: "Factura no encontrada" }, { status: 404 });
+  return NextResponse.json(inv);
+}
+
+// PATCH: actualizar cabecera; recalcula totales según items y vatPct
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  const id = params.id;
+  const body = await req.json().catch(()=> ({}));
+
+  const existing = await prisma.supplierInvoice.findUnique({
+    where: { id },
+    include: { items: true },
+  });
+  if (!existing) return NextResponse.json({ error: "Factura no encontrada" }, { status: 404 });
+
+  const vatPct = typeof body.vatPct === "number" ? body.vatPct : existing.vatPct;
+  const net = existing.items.reduce((a, it) => a + (it.qty || 0) * (it.unitCostNet || 0), 0);
+  const vat = Math.round(net * (vatPct / 100));
+  const gross = net + vat;
+
+  const data: any = {
+    kind: body.kind ?? existing.kind,
+    supplierId: body.supplierId ?? existing.supplierId,
+    supplierName: (body.supplierName ?? existing.supplierName) || null,
+    cuit: (body.cuit ?? existing.cuit) || null,
+    docType: body.docType ?? existing.docType,
+    pos: typeof body.pos === "number" ? body.pos : existing.pos,
+    number: (body.number ?? existing.number) || null,
+    date: body.date ? new Date(body.date) : existing.date,
+    vatPct,
+    amountNet: net,
+    amountVat: vat,
+    amountGross: gross,
+    isPaid: typeof body.isPaid === "boolean" ? body.isPaid : existing.isPaid,
+    paidAt: body.isPaid ? (body.paidAt ? new Date(body.paidAt) : (existing.paidAt ?? new Date())) : null,
+    notes: (body.notes ?? existing.notes) || null,
+  };
+
+  const updated = await prisma.supplierInvoice.update({ where: { id }, data });
+  return NextResponse.json(updated);
+}
+
+// DELETE: borra factura e items
+export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+  const id = params.id;
+  const ex = await prisma.supplierInvoice.findUnique({ where: { id } });
+  if (!ex) return NextResponse.json({ error: "Factura no encontrada" }, { status: 404 });
+
+  await prisma.$transaction([
+    prisma.supplierInvoiceItem.deleteMany({ where: { invoiceId: id } }),
+    prisma.supplierInvoice.delete({ where: { id } }),
+  ]);
+
+  return NextResponse.json({ ok: true });
+}

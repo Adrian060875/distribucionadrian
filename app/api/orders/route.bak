@@ -1,0 +1,27 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function GET() {
+  // Consulta simple sin includes para evitar errores si no existen relaciones en el modelo
+  const rows: any[] = await prisma.order.findMany({
+    orderBy: [{ id: "desc" }],
+  });
+
+  // Adaptamos el payload para la UI:
+  // - agregamos un objeto `client` con `fullName` si existen campos sueltos como clientName/customerName
+  // - dejamos `items` vacío si no hay relación (la UI debería tolerarlo)
+  const data = rows.map((o) => ({
+    ...o,
+    client: {
+      id: (o as any).clientId ?? null,
+      fullName:
+        (o as any).clientName ??
+        (o as any).customerName ??
+        (o as any).clienteNombre ??
+        "",
+    },
+    items: Array.isArray((o as any).items) ? (o as any).items : [],
+  }));
+
+  return NextResponse.json(data);
+}

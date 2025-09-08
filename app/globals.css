@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ajustes de tema oscuro y tipografía */
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  @apply bg-[#0b0f0c] text-zinc-100;
+  font-feature-settings: "cv02","cv03","cv04","cv11";
+}
+
+/* Estilo de inputs / selects por defecto en dark */
+input, select, textarea {
+  @apply bg-zinc-900 border border-zinc-700 text-white rounded-xl px-3 py-2;
+}
+
+/* Botones verdes elegantes */
+.btn-emerald {
+  @apply rounded-xl border border-emerald-600/40 bg-emerald-600/20 px-4 py-2 text-sm text-emerald-300 hover:bg-emerald-600/30;
+}

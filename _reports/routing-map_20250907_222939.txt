@@ -1,0 +1,100 @@
+# Routing map - 7/9/2025 22:29:39
+
+## Páginas (URL -> archivo)
+/admin/about  ->  C:\Distribucionadrian\app\admin\about\page.tsx
+/admin/alliances/[id]  ->  C:\Distribucionadrian\app\admin\alliances\[id]\page.tsx
+/admin/alliances  ->  C:\Distribucionadrian\app\admin\alliances\page.tsx
+/admin/clients/[id]  ->  C:\Distribucionadrian\app\admin\clients\[id]\page.tsx
+/admin/clients  ->  C:\Distribucionadrian\app\admin\clients\page.tsx
+/admin/financing  ->  C:\Distribucionadrian\app\admin\financing\page.tsx
+/admin/financing-plans  ->  C:\Distribucionadrian\app\admin\financing-plans\page.tsx
+/admin/invoices  ->  C:\Distribucionadrian\app\admin\invoices\page.tsx
+/admin/orders/[id]  ->  C:\Distribucionadrian\app\admin\orders\[id]\page.tsx
+/admin/orders/new  ->  C:\Distribucionadrian\app\admin\orders\new\page.tsx
+/admin/orders  ->  C:\Distribucionadrian\app\admin\orders\page.tsx
+/admin  ->  C:\Distribucionadrian\app\admin\page.tsx
+/admin/plans  ->  C:\Distribucionadrian\app\admin\plans\page.tsx
+/admin/products  ->  C:\Distribucionadrian\app\admin\products\page.tsx
+/admin/purchaces  ->  C:\Distribucionadrian\app\admin\purchaces\page.tsx
+/admin/purchase-orders  ->  C:\Distribucionadrian\app\admin\purchase-orders\page.tsx
+/admin/reports  ->  C:\Distribucionadrian\app\admin\reports\page.tsx
+/admin/sellers/[id]  ->  C:\Distribucionadrian\app\admin\sellers\[id]\page.tsx
+/admin/sellers  ->  C:\Distribucionadrian\app\admin\sellers\page.tsx
+/admin/supplier-invoices  ->  C:\Distribucionadrian\app\admin\supplier-invoices\page.tsx
+/admin/suppliers/[id]  ->  C:\Distribucionadrian\app\admin\suppliers\[id]\page.tsx
+/admin/suppliers  ->  C:\Distribucionadrian\app\admin\suppliers\page.tsx
+/clients/[id]  ->  C:\Distribucionadrian\app\clients\[id]\page.tsx
+/orders/[id]  ->  C:\Distribucionadrian\app\orders\[id]\page.tsx
+/orders/new  ->  C:\Distribucionadrian\app\orders\new\page.tsx
+/orders  ->  C:\Distribucionadrian\app\orders\page.tsx
+/page.tsx  ->  C:\Distribucionadrian\app\page.tsx
+
+## Endpoints API (URL -> archivo)
+/api/alliances/[id]/commissions  ->  C:\Distribucionadrian\app\api\alliances\[id]\commissions\route.ts
+/api/alliances/[id]/pay  ->  C:\Distribucionadrian\app\api\alliances\[id]\pay\route.ts
+/api/alliances/[id]  ->  C:\Distribucionadrian\app\api\alliances\[id]\route.ts
+/api/alliances/commissions  ->  C:\Distribucionadrian\app\api\alliances\commissions\route.ts
+/api/alliances  ->  C:\Distribucionadrian\app\api\alliances\route.ts
+/api/billing  ->  C:\Distribucionadrian\app\api\billing\route.ts
+/api/clients/[id]  ->  C:\Distribucionadrian\app\api\clients\[id]\route.ts
+/api/clients  ->  C:\Distribucionadrian\app\api\clients\route.ts
+/api/commission-payments/[id]  ->  C:\Distribucionadrian\app\api\commission-payments\[id]\route.ts
+/api/commission-payments  ->  C:\Distribucionadrian\app\api\commission-payments\route.ts
+/api/commissions/accrued  ->  C:\Distribucionadrian\app\api\commissions\accrued\route.ts
+/api/commissions/alliances/[id]  ->  C:\Distribucionadrian\app\api\commissions\alliances\[id]\route.ts
+/api/commissions/list  ->  C:\Distribucionadrian\app\api\commissions\list\route.ts
+/api/commissions/pay/[id]  ->  C:\Distribucionadrian\app\api\commissions\pay\[id]\route.ts
+/api/commissions/pay  ->  C:\Distribucionadrian\app\api\commissions\pay\route.ts
+/api/commissions  ->  C:\Distribucionadrian\app\api\commissions\route.ts
+/api/commissions/sellers/[id]  ->  C:\Distribucionadrian\app\api\commissions\sellers\[id]\route.ts
+/api/expenses/[id]  ->  C:\Distribucionadrian\app\api\expenses\[id]\route.ts
+/api/expenses  ->  C:\Distribucionadrian\app\api\expenses\route.ts
+/api/financing/calc  ->  C:\Distribucionadrian\app\api\financing\calc\route.ts
+/api/financing-plans/[id]  ->  C:\Distribucionadrian\app\api\financing-plans\[id]\route.ts
+/api/financing-plans  ->  C:\Distribucionadrian\app\api\financing-plans\route.ts
+/api/incomes/[id]  ->  C:\Distribucionadrian\app\api\incomes\[id]\route.ts
+/api/incomes  ->  C:\Distribucionadrian\app\api\incomes\route.ts
+/api/order-items/[id]  ->  C:\Distribucionadrian\app\api\order-items\[id]\route.ts
+/api/orders/[id]/purchases  ->  C:\Distribucionadrian\app\api\orders\[id]\purchases\route.ts
+/api/orders/[id]  ->  C:\Distribucionadrian\app\api\orders\[id]\route.ts
+/api/orders/list  ->  C:\Distribucionadrian\app\api\orders\list\route.ts
+/api/orders/list-lite  ->  C:\Distribucionadrian\app\api\orders\list-lite\route.ts
+/api/orders/next-code  ->  C:\Distribucionadrian\app\api\orders\next-code\route.ts
+/api/orders  ->  C:\Distribucionadrian\app\api\orders\route.ts
+/api/payments/[id]  ->  C:\Distribucionadrian\app\api\payments\[id]\route.ts
+/api/payments/list  ->  C:\Distribucionadrian\app\api\payments\list\route.ts
+/api/payments  ->  C:\Distribucionadrian\app\api\payments\route.ts
+/api/ping  ->  C:\Distribucionadrian\app\api\ping\route.ts
+/api/plans/[id]  ->  C:\Distribucionadrian\app\api\plans\[id]\route.ts
+/api/plans  ->  C:\Distribucionadrian\app\api\plans\route.ts
+/api/products/[id]  ->  C:\Distribucionadrian\app\api\products\[id]\route.ts
+/api/products/import  ->  C:\Distribucionadrian\app\api\products\import\route.ts
+/api/products/import-json  ->  C:\Distribucionadrian\app\api\products\import-json\route.ts
+/api/products/last-costs  ->  C:\Distribucionadrian\app\api\products\last-costs\route.ts
+/api/products  ->  C:\Distribucionadrian\app\api\products\route.ts
+/api/reports/orders/[id]  ->  C:\Distribucionadrian\app\api\reports\orders\[id]\route.ts
+/api/reports/pl  ->  C:\Distribucionadrian\app\api\reports\pl\route.ts
+/api/reports/tax  ->  C:\Distribucionadrian\app\api\reports\tax\route.ts
+/api/sellers/[id]  ->  C:\Distribucionadrian\app\api\sellers\[id]\route.ts
+/api/sellers  ->  C:\Distribucionadrian\app\api\sellers\route.ts
+/api/supplier-invoices/[id]/apply-costs  ->  C:\Distribucionadrian\app\api\supplier-invoices\[id]\apply-costs\route.ts
+/api/supplier-invoices/[id]  ->  C:\Distribucionadrian\app\api\supplier-invoices\[id]\route.ts
+/api/supplier-invoices  ->  C:\Distribucionadrian\app\api\supplier-invoices\route.ts
+/api/supplier-payments  ->  C:\Distribucionadrian\app\api\supplier-payments\route.ts
+/api/suppliers/[id]/invoices  ->  C:\Distribucionadrian\app\api\suppliers\[id]\invoices\route.ts
+/api/suppliers/[id]/payments  ->  C:\Distribucionadrian\app\api\suppliers\[id]\payments\route.ts
+/api/suppliers/[id]  ->  C:\Distribucionadrian\app\api\suppliers\[id]\route.ts
+/api/suppliers  ->  C:\Distribucionadrian\app\api\suppliers\route.ts
+
+## Navegaciones (href=\
+C:\Distribucionadrian\app\page.tsx:9  ->  href="/admin"
+C:\Distribucionadrian\plans\page.tsx:100  ->  href="/admin"
+
+## Navegaciones (href dinámico con { ... })
+
+## Navegación programática (router.push)
+
+## Llamadas a API (fetch("/api/..."))
+
+----
+Fin del reporte.

@@ -1,0 +1,140 @@
+// app/api/orders/[id]/purchases/route.ts
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+// GET /api/orders/:id/purchases
+// Devuelve facturas de proveedor (compras) ligadas a la orden + totales por tipo.
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const orderId = params.id;
+
+  const invoices = await prisma.supplierInvoice.findMany({
+    where: { orderId },
+    include: {
+      supplier: true,
+      items: { include: { product: true, orderItem: true } },
+    },
+    orderBy: { date: "asc" },
+  });
+
+  const totals = invoices.reduce(
+    (acc, inv) => {
+      const gross = (inv.amountGross ?? 0);
+      const kind = inv.kind ?? "PROD";
+      acc.totalNet += inv.amountNet ?? 0;
+      acc.totalVat += inv.amountVat ?? 0;
+      acc.totalGross += gross;
+
+      if (kind === "SERVICE") acc.serviceGross += gross;
+      else if (kind === "JV") acc.jvGross += gross;
+      else acc.prodGross += gross;
+
+      return acc;
+    },
+    { totalNet: 0, totalVat: 0, totalGross: 0, prodGross: 0, serviceGross: 0, jvGross: 0 }
+  );
+
+  return NextResponse.json({ invoices, totals });
+}
+
+// POST /api/orders/:id/purchases
+// Crea una compra ligada a la orden. Soporta:
+// - kind: "PROD" (con items ligados a OrderItem/product)  o
+// - kind: "SERVICE" / "JV" (un renglón libre por importe y descripción)
+export async function POST(req: Request, { params }: { params: { id: string } }) {
+  const orderId = params.id;
+  const body = await req.json();
+
+  // Campos base
+  const kind = (body?.kind as string) || "PROD"; // "PROD" | "SERVICE" | "JV"
+  const supplierId = body?.supplierId ?? null;
+  const supplierName = body?.supplierName ?? null;
+  const cuit = body?.cuit ?? null;
+  const docType = body?.docType ?? "C";
+  const pos = body?.pos ?? null;
+  const number = body?.number ?? null;
+  const date = body?.date ? new Date(body.date) : new Date();
+  const vatPct = Number(body?.vatPct ?? 21);
+
+  // Items (solo para kind="PROD"). Estructura:
+  // items: [{ orderItemId?, productId?, description?, qty, unitCostNet }]  // montos en centavos
+  const itemsInput: any[] = Array.isArray(body?.items) ? body.items : [];
+
+  // Para SERVICE/JV aceptamos amountNet directo y description
+  const amountNetDirect = Number(body?.amountNet ?? 0); // centavos
+  const descriptionDirect = (body?.description ?? null) as string | null;
+
+  // Calculamos montos:
+  let amountNet = 0;
+  let createItems: any[] = [];
+
+  if (kind === "PROD") {
+    if (itemsInput.length === 0) {
+      return NextResponse.json({ error: "Faltan items para tipo PROD" }, { status: 400 });
+    }
+    for (const it of itemsInput) {
+      const qty = Math.max(0, Math.round(Number(it?.qty ?? 0)));
+      const unitCostNet = Math.max(0, Math.round(Number(it?.unitCostNet ?? 0))); // centavos
+      if (!qty || !unitCostNet) continue;
+      amountNet += qty * unitCostNet;
+      createItems.push({
+        qty,
+        unitCostNet,
+        description: it?.description ?? null,
+        productId: it?.productId ?? null,
+        orderItemId: it?.orderItemId ?? null,
+      });
+    }
+    if (amountNet <= 0) {
+      return NextResponse.json({ error: "Importe neto inválido" }, { status: 400 });
+    }
+  } else {
+    // SERVICE / JV: un solo renglón libre (qty=1)
+    if (amountNetDirect <= 0) {
+      return NextResponse.json({ error: "amountNet requerido (>0) para SERVICE/JV" }, { status: 400 });
+    }
+    amountNet = amountNetDirect;
+    createItems = [{
+      qty: 1,
+      unitCostNet: amountNetDirect,
+      description: descriptionDirect ?? (kind === "SERVICE" ? "Servicio" : "Joint Venture"),
+      productId: null,
+      orderItemId: null,
+    }];
+  }
+
+  const amountVat = Math.round(amountNet * vatPct / 100);
+  const amountGross = amountNet + amountVat;
+
+  const created = await prisma.supplierInvoice.create({
+    data: {
+      orderId,
+      kind,
+      supplierId,
+      supplierName,
+      cuit,
+      docType,
+      pos: pos ?? null,
+      number: number?.toString?.() ?? null,
+      date,
+      amountNet,
+      vatPct,
+      amountVat,
+      amountGross,
+      items: {
+        create: createItems.map(i => ({
+          description: i.description ?? null,
+          qty: i.qty,
+          unitCostNet: i.unitCostNet,
+          productId: i.productId ?? null,
+          orderItemId: i.orderItemId ?? null,
+        }))
+      }
+    },
+    include: {
+      supplier: true,
+      items: { include: { product: true, orderItem: true } },
+    }
+  });
+
+  return NextResponse.json({ ok: true, invoice: created }, { status: 201 });
+}

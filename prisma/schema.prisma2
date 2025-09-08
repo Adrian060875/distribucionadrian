@@ -1,0 +1,89 @@
+// === NUEVO: métodos de pago a proveedor
+enum SupplierPaymentMethod {
+  CASH
+  BANK
+  DEPOSIT
+  COINPAY
+  COMPANY_FINANCING
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String
+  // NUEVOS (opcionales)
+  cuit      String?  @db.VarChar(20)
+  phone     String?  @db.VarChar(30)
+
+  invoices  SupplierInvoice[]
+  payments  SupplierPayment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SupplierInvoice {
+  id           String   @id @default(cuid())
+  supplierId   String
+  supplier     Supplier  @relation(fields: [supplierId], references: [id])
+
+  // (opcional) link a la orden de venta que originó la compra
+  orderId      String?
+
+  kind         String   // "PROD" | "SERVICE" | "JV"
+  date         DateTime
+  docType      String
+  pos          Int?
+  number       String?
+  vatPct       Int
+
+  amountNet    Int      // centavos
+  amountVat    Int
+  amountGross  Int
+
+  // tracking de cancelación
+  paidCents    Int      @default(0)
+  status       String   @default("OPEN") // OPEN | PARTIAL | PAID
+
+  applications SupplierPaymentApplication[]
+  createdAt    DateTime @default(now())
+}
+
+model SupplierPayment {
+  id            String                 @id @default(cuid())
+  supplierId    String
+  supplier      Supplier               @relation(fields: [supplierId], references: [id])
+  date          DateTime               @default(now())
+  method        SupplierPaymentMethod
+  amountCents   Int
+  notes         String?
+
+  // (opcional) si viene de una financiación de una orden
+  orderId       String?
+  ignoreInterest Boolean               @default(true)
+
+  applications  SupplierPaymentApplication[]
+  createdAt     DateTime               @default(now())
+}
+
+model SupplierPaymentApplication {
+  id          String          @id @default(cuid())
+  paymentId   String
+  invoiceId   String
+  amountCents Int
+
+  payment     SupplierPayment @relation(fields: [paymentId], references: [id])
+  invoice     SupplierInvoice @relation(fields: [invoiceId], references: [id])
+
+  @@unique([paymentId, invoiceId])
+}
+
+// === ORDEN (venta): nuevo campo Coinpay
+model Order {
+  id            String   @id @default(cuid())
+  // ... (tus campos existentes)
+  downPayment   Int      @default(0)   // anticipo
+  discount      Int      @default(0)
+
+  // NUEVO: Coinpay (no entra al plan de financiación)
+  coinpayCents  Int      @default(0)
+}

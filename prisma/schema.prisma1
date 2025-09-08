@@ -1,0 +1,246 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Convenciones (String) para evitar enums en SQLite:
+// - Order.status:        "DRAFT" | "CONFIRMED" | "PARTIALLY_PAID" | "PAID" | "CANCELLED"
+// - Order.financingType: "NONE"  | "INSTALMENTS"
+// - Payment.method:      "CASH"  | "CARD" | "TRANSFER"
+// - SupplierInvoice.kind: "PROD" | "SERVICE" | "JV"
+
+model Seller {
+  id             String              @id @default(cuid())
+  name           String
+  phone          String?
+  email          String?
+  commissionType String              @default("PERCENT")
+  commissionPct  Float               @default(0)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  orders         Order[]
+  commissionPays CommissionPayment[]
+}
+
+model Alliance {
+  id             String              @id @default(cuid())
+  name           String
+  phone          String?
+  email          String?
+  commissionType String              @default("PERCENT")
+  commissionPct  Float               @default(0)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime?           @default(now())
+  orders         Order[]
+  commissionPays CommissionPayment[]
+}
+
+model Client {
+  id             String    @id @default(cuid())
+  fullName       String
+  phone          String
+  email          String?
+  address        String?
+  birthDate      DateTime?
+  notes          String?
+  documentNumber String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  orders Order[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  sku         String   @unique
+  description String?
+  costNet     Int      @default(0) // costo sin IVA (centavos)
+  listPrice   Int
+  cashPrice   Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items                OrderItem[]
+  supplierInvoiceItems SupplierInvoiceItem[]
+}
+
+model FinancingPlan {
+  id          String   @id @default(cuid())
+  name        String
+  months      Int
+  interestPct Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Order {
+  id   String @id @default(cuid())
+  code String @unique
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id])
+
+  sellerId String?
+  seller   Seller? @relation(fields: [sellerId], references: [id])
+
+  allianceId String?
+  alliance   Alliance? @relation(fields: [allianceId], references: [id])
+
+  status        String @default("CONFIRMED")
+  financingType String @default("NONE")
+
+  financingPlanId String?
+  financingPlan   FinancingPlan? @relation(fields: [financingPlanId], references: [id])
+
+  downPayment Int @default(0) // anticipo (centavos)
+  discount    Int @default(0) // descuento total (centavos)
+
+  totalList      Int // suma de subtotales (centavos)
+  totalToFinance Int // luego de anticipo/desc (centavos)
+  totalFinal     Int // con interés si aplica (centavos)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items            OrderItem[]
+  payments         Payment[]
+  instalments      Instalment[]
+  supplierInvoices SupplierInvoice[]
+  commissionPays   CommissionPayment[] // pagos de comisiones asociados a esta orden
+}
+
+model OrderItem {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  quantity  Int @default(1)
+  unitPrice Int // (centavos, IVA incl)
+  subtotal  Int
+
+  supplierInvoiceItems SupplierInvoiceItem[]
+}
+
+model Instalment {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  number  Int
+  dueDate DateTime
+  amount  Int // centavos
+  isPaid  Boolean   @default(false)
+  paidAt  DateTime?
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  method    String   @default("CASH") // "CASH" | "CARD" | "TRANSFER"
+  amount    Int // centavos
+  reference String?
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String
+  cuit      String?
+  email     String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invoices SupplierInvoice[]
+}
+
+model SupplierInvoice {
+  id String @id @default(cuid())
+
+  supplierId String?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+
+  supplierName String?
+  cuit         String?
+
+  orderId String?
+  order   Order?  @relation(fields: [orderId], references: [id])
+
+  kind String? // "PROD" | "SERVICE" | "JV"
+
+  docType String
+  pos     Int
+  number  String
+  date    DateTime
+
+  amountNet   Int
+  vatPct      Float
+  amountVat   Int
+  amountGross Int
+
+  isPaid Boolean   @default(false)
+  paidAt DateTime?
+  notes  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items SupplierInvoiceItem[]
+}
+
+model SupplierInvoiceItem {
+  id String @id @default(cuid())
+
+  invoiceId String
+  invoice   SupplierInvoice @relation(fields: [invoiceId], references: [id])
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+
+  orderItemId String?
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id])
+
+  description String?
+  qty         Int     @default(1)
+  unitCostNet Int // centavos (neto, sin IVA)
+}
+
+// Pagos de comisiones (vendedor o alianza) asociados a una orden concreta
+model CommissionPayment {
+  id     String   @id @default(cuid())
+  kind   String // "SELLER" | "ALLIANCE"
+  amount Int // centavos
+  date   DateTime @default(now())
+  notes  String?
+
+  orderId String?
+  order   Order?  @relation(fields: [orderId], references: [id])
+
+  sellerId String?
+  seller   Seller? @relation(fields: [sellerId], references: [id])
+
+  allianceId String?
+  alliance   Alliance? @relation(fields: [allianceId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
