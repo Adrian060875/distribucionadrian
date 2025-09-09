@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { ensureData, files, readJson, writeJson } from "../suppliers/shared";
+﻿import { NextResponse } from "next/server";
+import { ensureData, files, readJson, writeJson } from "@/app/api/suppliers/shared";
 
 type Supplier = { id:string; name:string; balance?:number };
 type Invoice  = { id:string; supplierId:string; amountGross:number; paidCents:number; number:string|null };
