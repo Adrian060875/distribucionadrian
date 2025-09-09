@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 // helpers compartidos (idénticos a los del archivo principal)
@@ -78,7 +78,7 @@ async function reapplyAllPayments(orderId: string) {
 }
 
 /** PATCH /api/payments/:id — Edita un pago y re-calcula cuotas */
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+// MOVIDO A API ROUTE\nasync function PATCH(req: Request, { params }: { params: { id: string } }) {
   try {
     const id = String(params?.id || "");
     if (!id) return NextResponse.json({ error: "Falta id" }, { status: 400 });
@@ -141,7 +141,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 }
 
 /** DELETE /api/payments/:id — Anula un pago y re-calcula cuotas */
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+// MOVIDO A API ROUTE\nasync function DELETE(_req: Request, { params }: { params: { id: string } }) {
   try {
     const id = String(params?.id || "");
     if (!id) return NextResponse.json({ error: "Falta id" }, { status: 400 });
