@@ -1,27 +1,46 @@
-import { promises as fs } from "fs";
+﻿// app/api/suppliers/shared.ts
+import fs from "fs";
 import path from "path";
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const SUPPLIERS = path.join(DATA_DIR, "suppliers.json");
-
-export async function ensureData() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  try { await fs.access(SUPPLIERS); } catch { await fs.writeFile(SUPPLIERS, "[]", "utf-8"); }
-}
 
 export type Supplier = {
   id: string;
   name: string;
-  cuit?: string;
-  phone?: string;
-  balance?: number; // opcional
+  cuit?: string | null;
 };
 
-export async function readSuppliers(): Promise<Supplier[]> {
-  const raw = await fs.readFile(SUPPLIERS, "utf-8");
-  try { return JSON.parse(raw) as Supplier[]; } catch { return []; }
+// Rutas lógicas usadas por otros módulos (stub seguro)
+export const files = {
+  suppliers: "data/suppliers.json",
+  supplierPayments: "data/supplier-payments.json",
+};
+
+let suppliers: Supplier[] = [];
+
+export async function ensureData() {
+  // Si quisieras leer de disco en local, descomentá:
+  // try {
+  //   const p = path.resolve(process.cwd(), files.suppliers);
+  //   if (fs.existsSync(p)) suppliers = JSON.parse(fs.readFileSync(p, "utf8"));
+  // } catch {}
 }
 
-export async function writeSuppliers(list: Supplier[]) {
-  await fs.writeFile(SUPPLIERS, JSON.stringify(list, null, 2), "utf-8");
+export async function readSuppliers(): Promise<Supplier[]> {
+  return suppliers;
+}
+
+export async function writeSuppliers(next: Supplier[]) {
+  suppliers = next;
+  // En Vercel el FS es efímero; no persiste. En local podés persistir:
+  // await writeJson(files.suppliers, next);
+}
+
+export async function writeJson(relPath: string, data: any) {
+  try {
+    const abs = path.resolve(process.cwd(), relPath);
+    const dir = path.dirname(abs);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(abs, JSON.stringify(data, null, 2), "utf8");
+  } catch {
+    // No-op si no se puede escribir
+  }
 }
