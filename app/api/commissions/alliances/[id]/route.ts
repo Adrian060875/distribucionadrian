@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../../../lib/prisma";
+﻿import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 // base de comisión: incluye anticipo, excluye interés
 // base = totalList - discountAmount (mínimo 0)

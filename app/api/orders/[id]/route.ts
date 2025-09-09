@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 // Si tenés alias configurado (tsconfig baseUrl/paths), usá esta línea:
 import { prisma } from "@/lib/prisma";
 // Si NO usás alias y te da error, cambiá la línea de arriba por:
-// import { prisma } from "../../../../lib/prisma";
+// import { prisma } from "@/lib/prisma";
 
 /* Utiles */
 function toCents(input: unknown): number {

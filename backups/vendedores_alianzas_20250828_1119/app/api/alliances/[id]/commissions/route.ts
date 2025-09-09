@@ -1,6 +1,6 @@
-// app/api/alliances/[id]/commissions/route.ts
+﻿// app/api/alliances/[id]/commissions/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { computeOrderBase, calcCommission } from "../../../../../lib/commissions";
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {

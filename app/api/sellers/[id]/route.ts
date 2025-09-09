@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+﻿import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {

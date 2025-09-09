@@ -1,6 +1,6 @@
-// app/api/alliances/[id]/route.ts
+﻿// app/api/alliances/[id]/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 // GET /api/alliances/:id  -> obtener una alianza
 export async function GET(_req: Request, { params }: { params: { id: string } }) {

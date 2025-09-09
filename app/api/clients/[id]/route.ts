@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+﻿import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 // Utilidad: convierte "" en null y deja los demás valores como están
 function emptyToNull<T>(v: T): T | null {

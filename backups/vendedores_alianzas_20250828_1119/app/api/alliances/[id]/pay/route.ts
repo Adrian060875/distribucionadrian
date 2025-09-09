@@ -1,6 +1,6 @@
-// app/api/alliances/[id]/pay/route.ts
+﻿// app/api/alliances/[id]/pay/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
