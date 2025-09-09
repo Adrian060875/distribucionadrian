@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+﻿import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -16,21 +16,21 @@ export async function GET(req: Request) {
     return w;
   };
 
-  // IVA Ventas (Débito): ingresos facturados
+  // IVA Ventas (DÃ©bito): ingresos facturados
   const incomes = await prisma.incomeRecord.findMany({
     where: { kind: "INVOICED", ...dateWhere("date") }
   });
   const ivaVentasBase = incomes.reduce((a, r) => a + (r.amountNet || 0), 0);
   const ivaVentas     = incomes.reduce((a, r) => a + Math.round((r.amountNet || 0) * ((r.vatPct || 0) / 100)), 0);
 
-  // IVA Compras (Crédito): Servicios/JV
+  // IVA Compras (CrÃ©dito): Servicios/JV
   const expenses = await prisma.expenseInvoice.findMany({
     where: { ...dateWhere("date") }
   });
   const ivaComprasServBase = expenses.reduce((a, e) => a + (e.amountNet || 0), 0);
   const ivaComprasServ     = expenses.reduce((a, e) => a + Math.round((e.amountNet || 0) * ((e.vatPct || 0) / 100)), 0);
 
-  // IVA Compras (Crédito): Mercadería (facturas de proveedor reales)
+  // IVA Compras (CrÃ©dito): MercaderÃ­a (facturas de proveedor reales)
   const purchases = await prisma.supplierInvoice.findMany({
     where: { ...dateWhere("date") }
   });
@@ -57,3 +57,4 @@ export async function GET(req: Request) {
     saldoIva: ivaVentas - ivaCompras
   });
 }
+

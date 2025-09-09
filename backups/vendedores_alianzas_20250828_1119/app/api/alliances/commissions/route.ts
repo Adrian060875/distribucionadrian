@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+﻿import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 /**
  * GET /api/alliances/commissions
  * Resumen por alianza:
- *  - commissionDue: suma de comisiones adeudadas por lo cobrado (anticipo + pagos), tope base sin interÃ©s
+ *  - commissionDue: suma de comisiones adeudadas por lo cobrado (anticipo + pagos), tope base sin interÃƒÂ©s
  *  - breakdown por orden (id, code, cliente, due por esa orden)
  */
 export async function GET() {
@@ -16,7 +16,7 @@ export async function GET() {
 
     if (!alliances.length) return NextResponse.json([]);
 
-    // Traemos las Ã³rdenes por alianza con lo necesario para calcular
+    // Traemos las ÃƒÂ³rdenes por alianza con lo necesario para calcular
     const orders = await prisma.order.findMany({
       where: { allianceId: { not: null } },
       orderBy: { createdAt: "desc" },
@@ -80,3 +80,4 @@ export async function GET() {
     return NextResponse.json({ error: "No se pudo calcular comisiones" }, { status: 500 });
   }
 }
+

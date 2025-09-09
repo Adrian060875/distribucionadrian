@@ -1,6 +1,6 @@
-// app/api/alliances/route.ts
+﻿// app/api/alliances/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { computeOrderBase, calcCommission } from "../../../lib/commissions";
 
 // LISTAR
@@ -72,8 +72,8 @@ export async function POST(req: Request) {
     const email = body?.email ? String(body.email).trim() : undefined;
 
     if (!name) return NextResponse.json({ ok: false, error: "Nombre requerido" }, { status: 400 });
-    if (!Number.isFinite(commissionPct) || commissionPct < 0) return NextResponse.json({ ok: false, error: "Comisión inválida" }, { status: 400 });
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ ok: false, error: "Email inválido" }, { status: 400 });
+    if (!Number.isFinite(commissionPct) || commissionPct < 0) return NextResponse.json({ ok: false, error: "ComisiÃ³n invÃ¡lida" }, { status: 400 });
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ ok: false, error: "Email invÃ¡lido" }, { status: 400 });
 
     const data: any = { name, commissionPct };
     if (phone) data.phone = phone;
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
           data: { name, commissionPct },
           select: { id: true, name: true, commissionPct: true },
         });
-        return NextResponse.json({ ok: true, data: created, warn: "Schema sin phone/email: se creó sin esos campos." });
+        return NextResponse.json({ ok: true, data: created, warn: "Schema sin phone/email: se creÃ³ sin esos campos." });
       }
       throw e;
     }
@@ -112,13 +112,13 @@ export async function PATCH(req: Request) {
     if (typeof body?.name === "string") updates.name = body.name.trim();
     if (typeof body?.commissionPct !== "undefined") {
       const pct = Number(body.commissionPct);
-      if (!Number.isFinite(pct) || pct < 0) return NextResponse.json({ ok: false, error: "Comisión inválida" }, { status: 400 });
+      if (!Number.isFinite(pct) || pct < 0) return NextResponse.json({ ok: false, error: "ComisiÃ³n invÃ¡lida" }, { status: 400 });
       updates.commissionPct = pct;
     }
     if ("phone" in body) updates.phone = body.phone ? String(body.phone).trim() : null;
     if ("email" in body) {
       const em = body.email ? String(body.email).trim() : null;
-      if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return NextResponse.json({ ok: false, error: "Email inválido" }, { status: 400 });
+      if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return NextResponse.json({ ok: false, error: "Email invÃ¡lido" }, { status: 400 });
       updates.email = em;
     }
     if (!Object.keys(updates).length) return NextResponse.json({ ok: false, error: "Nada para actualizar" }, { status: 400 });
@@ -139,7 +139,7 @@ export async function PATCH(req: Request) {
           data: rest,
           select: { id: true, name: true, commissionPct: true },
         });
-        return NextResponse.json({ ok: true, data: upd, warn: "Schema sin phone/email: se actualizó sin esos campos." });
+        return NextResponse.json({ ok: true, data: upd, warn: "Schema sin phone/email: se actualizÃ³ sin esos campos." });
       }
       throw e;
     }
@@ -165,3 +165,4 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ ok: false, error: error?.message ?? "Error" }, { status: 500 });
   }
 }
+

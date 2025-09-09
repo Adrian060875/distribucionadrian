@@ -1,16 +1,16 @@
-// app/api/financing/calc/route.ts
+﻿// app/api/financing/calc/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 /**
  * GET /api/financing/calc?orderId=&planId=&type=&downPayment=&graceDays=
  * - type: "CASH" | "IN_HOUSE" | "CARD" | "COMPANY"
- * - orderId: opcional (si no, podÃ©s mandar totalBase).
- * - planId: necesario para IN_HOUSE / CARD / COMPANY (define months, interÃ©s, etc).
+ * - orderId: opcional (si no, podÃƒÂ©s mandar totalBase).
+ * - planId: necesario para IN_HOUSE / CARD / COMPANY (define months, interÃƒÂ©s, etc).
  * - downPayment: centavos (opcional)
- * - graceDays: dÃ­as de gracia para 1a cuota (opcional)
+ * - graceDays: dÃƒÂ­as de gracia para 1a cuota (opcional)
  * Alternativas:
- *   GET /api/financing/calc?totalBase=123456&... (si no tenÃ©s orderId)
+ *   GET /api/financing/calc?totalBase=123456&... (si no tenÃƒÂ©s orderId)
  */
 export async function GET(req: Request) {
   try {
@@ -30,7 +30,7 @@ export async function GET(req: Request) {
         select: { totalFinal: true }
       });
       if (!order) return NextResponse.json({ error: "Orden no encontrada" }, { status: 404 });
-      // tomamos totalFinal como base (podemos cambiar a totalList si preferÃ­s)
+      // tomamos totalFinal como base (podemos cambiar a totalList si preferÃƒÂ­s)
       totalBase = order.totalFinal || 0;
     }
     if (!totalBase || totalBase < 0) totalBase = 0;
@@ -50,7 +50,7 @@ export async function GET(req: Request) {
     }
 
     if (!planId) {
-      return NextResponse.json({ error: "Falta planId para este tipo de financiaciÃ³n" }, { status: 400 });
+      return NextResponse.json({ error: "Falta planId para este tipo de financiaciÃƒÂ³n" }, { status: 400 });
     }
 
     const plan = await prisma.financingPlan.findUnique({ where: { id: planId } });
@@ -71,7 +71,7 @@ export async function GET(req: Request) {
       financeBase = Math.round(financeBase * (1 + cardFeePct / 100));
     }
 
-    // interÃ©s segÃºn kind
+    // interÃƒÂ©s segÃƒÂºn kind
     let totalWithInterest = financeBase;
     if (interestKind === "SIMPLE" && interestPct > 0 && months > 0) {
       const monthly = interestPct / 100;
@@ -98,7 +98,7 @@ export async function GET(req: Request) {
       });
     }
 
-    // ajustar residuo a la Ãºltima cuota
+    // ajustar residuo a la ÃƒÂºltima cuota
     const sum = instalments.reduce((a, it) => a + it.amount, 0);
     const diff = totalWithInterest - sum;
     if (diff !== 0 && instalments.length > 0) {
@@ -128,6 +128,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(result, { status: 200 });
   } catch (err: any) {
-    return NextResponse.json({ error: "No se pudo calcular financiaciÃ³n", detail: String(err?.message || err) }, { status: 500 });
+    return NextResponse.json({ error: "No se pudo calcular financiaciÃƒÂ³n", detail: String(err?.message || err) }, { status: 500 });
   }
 }
+

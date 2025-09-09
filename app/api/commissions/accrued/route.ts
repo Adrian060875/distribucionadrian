@@ -1,6 +1,6 @@
-// app/api/commissions/accrued/route.ts
+﻿// app/api/commissions/accrued/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 /**
  * GET /api/commissions/accrued?from=&to=&status=CONFIRMED
@@ -45,7 +45,7 @@ export async function GET(req: Request) {
     });
 
     const rows = orders.map(o => {
-      const base = o.totalFinal || 0; // <-- cambiar aquÃ­ si querÃ©s otra base (p.ej. totalList)
+      const base = o.totalFinal || 0; // <-- cambiar aquÃƒÂ­ si querÃƒÂ©s otra base (p.ej. totalList)
       const sellerPct = o.seller?.commissionPct || 0;
       const alliancePct = o.alliance?.commissionPct || 0;
 
@@ -88,3 +88,4 @@ export async function GET(req: Request) {
     );
   }
 }
+

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../lib/prisma";
+﻿import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-// Base comisionable "según cobrado": anticipo + lo pagado de capital (sin interés)
+// Base comisionable "segÃºn cobrado": anticipo + lo pagado de capital (sin interÃ©s)
 function calcCollectedBase(order: any) {
   const paid = order.payments.reduce((a:number,p:any)=>a+p.amount,0);
   const dp = order.downPayment || 0;
@@ -12,7 +12,7 @@ function calcCollectedBase(order: any) {
   return Math.min(dp + adjustedPaid, cap);
 }
 
-// Base comisionable "teórica": anticipo + principal a financiar (sin interés), sin depender de cobros
+// Base comisionable "teÃ³rica": anticipo + principal a financiar (sin interÃ©s), sin depender de cobros
 function calcExpectedBase(order: any) {
   return (order.downPayment || 0) + (order.totalToFinance || 0);
 }
@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(()=>null);
-  if (!body) return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
+  if (!body) return NextResponse.json({ error: "JSON invÃ¡lido" }, { status: 400 });
 
   const { kind, sellerId, allianceId, orderId, amount, date, notes } = body as {
     kind: "SELLER" | "ALLIANCE";
@@ -126,3 +126,4 @@ export async function DELETE(req: NextRequest) {
   await prisma.commissionPayment.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }
+

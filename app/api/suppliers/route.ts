@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../lib/prisma";
+﻿import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 // GET /api/suppliers?q=...
 export async function GET(req: Request) {
@@ -32,3 +32,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No se pudo crear" }, { status: 500 });
   }
 }
+

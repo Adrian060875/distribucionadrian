@@ -1,6 +1,6 @@
-// app/api/orders/list/route.ts
+﻿// app/api/orders/list/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 // GET /api/orders/list?from=&to=&status=CONFIRMED
 export async function GET(req: Request) {
@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     const where: any = {};
     if (status) where.status = status;
 
-    // filtro por fecha de creaciÃ³n si vienen parÃ¡metros
+    // filtro por fecha de creaciÃƒÂ³n si vienen parÃƒÂ¡metros
     if (from || to) {
       where.createdAt = {};
       if (from) {
@@ -59,8 +59,9 @@ export async function GET(req: Request) {
     return NextResponse.json(shaped, { status: 200 });
   } catch (err: any) {
     return NextResponse.json(
-      { error: "No se pudieron listar Ã³rdenes", detail: String(err?.message || err) },
+      { error: "No se pudieron listar ÃƒÂ³rdenes", detail: String(err?.message || err) },
       { status: 500 }
     );
   }
 }
+

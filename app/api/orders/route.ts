@@ -1,6 +1,6 @@
-// app/api/orders/route.ts
+﻿// app/api/orders/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 /* Utils */
 function toCents(input: unknown): number {
@@ -19,7 +19,7 @@ function withInterest(baseCents: number, interestPct?: number | null) {
 
 /**
  * GET /api/orders
- * Devuelve órdenes para el listado, con `amount = subtotal - discount`.
+ * Devuelve Ã³rdenes para el listado, con `amount = subtotal - discount`.
  * Acepta ?q= (id, code o nombre de cliente).
  */
 export async function GET(req: Request) {
@@ -50,7 +50,7 @@ export async function GET(req: Request) {
       (a, it) => a + (it.unitPrice || 0) * (it.quantity || 0),
       0
     );
-    const amount = Math.max(subtotal - (o.discount || 0), 0); // 👈 lo que querés ver en el listado
+    const amount = Math.max(subtotal - (o.discount || 0), 0); // ðŸ‘ˆ lo que querÃ©s ver en el listado
     return {
       id: o.id,
       code: o.code,
@@ -71,8 +71,8 @@ export async function GET(req: Request) {
 
 /**
  * POST /api/orders
- * Crea una orden con items, anticipo, descuento y plan de financiación.
- * Guarda también allianceId si viene.
+ * Crea una orden con items, anticipo, descuento y plan de financiaciÃ³n.
+ * Guarda tambiÃ©n allianceId si viene.
  */
 export async function POST(req: Request) {
   try {
@@ -113,7 +113,7 @@ export async function POST(req: Request) {
     ]);
     if (prods.length !== items.length) {
       return NextResponse.json(
-        { error: "Algún producto no existe" },
+        { error: "AlgÃºn producto no existe" },
         { status: 400 }
       );
     }
@@ -138,12 +138,12 @@ export async function POST(req: Request) {
     const baseAfterDiscount = Math.max(totalList - disc, 0);
     // A financiar: base - anticipo
     const financedBase = Math.max(baseAfterDiscount - dp, 0);
-    // Total final con interés sobre lo financiado (si hay plan)
+    // Total final con interÃ©s sobre lo financiado (si hay plan)
     const totalFinal = plan
       ? withInterest(financedBase, plan.interestPct)
       : financedBase;
 
-    // Código simple YYYYMM-####
+    // CÃ³digo simple YYYYMM-####
     const seq = Math.floor(1000 + Math.random() * 9000);
     const code = `${new Date().getFullYear()}${(new Date().getMonth() + 1)
       .toString()
@@ -155,7 +155,7 @@ export async function POST(req: Request) {
           code,
           clientId,
           sellerId: sellerId ?? null,
-          allianceId: allianceId ?? null, // 👈 importante para comisiones de alianzas
+          allianceId: allianceId ?? null, // ðŸ‘ˆ importante para comisiones de alianzas
           status: "CONFIRMED",
           financingType: plan ? "INSTALMENTS" : "NONE",
           financingPlanId: plan?.id ?? null,
@@ -198,3 +198,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

@@ -1,6 +1,6 @@
-// app/api/commissions/list/route.ts
+﻿// app/api/commissions/list/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 // GET /api/commissions/list?kind=&orderId=&sellerId=&allianceId=&from=&to=
 // kind: "SELLER" | "ALLIANCE" (opcional)
@@ -62,3 +62,4 @@ export async function GET(req: Request) {
     );
   }
 }
+

@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+﻿import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 function commissionsDue(pct: number, o: any) {
   const totalList = o.totalList || 0;
@@ -96,3 +96,4 @@ export async function GET(req: Request) {
     detalle
   });
 }
+

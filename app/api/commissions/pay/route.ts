@@ -1,16 +1,16 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+﻿import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 /**
  * POST /api/commissions/pay
  * body: { kind: "SELLER"|"ALLIANCE", orderId: string, entityId: string, amount: number, notes?: string, sourceKind?: "EXTRA"|"INVOICED" }
  *
- * Registra un pago de comisión y lo asocia a la orden + vendedor/alianza.
- * El campo `sourceKind` se guarda en `notes` (prefijo) para tu conciliación de caja (ingresos/egresos extra).
+ * Registra un pago de comisiÃ³n y lo asocia a la orden + vendedor/alianza.
+ * El campo `sourceKind` se guarda en `notes` (prefijo) para tu conciliaciÃ³n de caja (ingresos/egresos extra).
  */
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
-  if (!body) return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
+  if (!body) return NextResponse.json({ error: "JSON invÃ¡lido" }, { status: 400 });
 
   const { kind, orderId, entityId, amount, notes, sourceKind } = body as {
     kind: "SELLER" | "ALLIANCE";
@@ -51,3 +51,4 @@ export async function POST(req: Request) {
 
   return NextResponse.json(created, { status: 201 });
 }
+
