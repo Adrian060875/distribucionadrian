@@ -1,0 +1,5 @@
+﻿backups/
+**/backups/
+**/*.zip
+**/*.rar
+**/*.7z
